@@ -1,37 +1,45 @@
 import 'dart:io';
 
-class AgeException {
-}
-
-class NameException {
+class AgeException implements Exception {
+    String getErrorMessage() {
+        return "\nNot correct age\n";
+    }
 }
 
 int getAgeTo100(int myAge) {
-    return 100 - myAge;
+    if (myAge >= 100) {
+        return 100;
+    } else {
+        return 100 - myAge;
+    }
 }
 
 int main() {
     String myName = " ";
     int myAge = 0;
+
     try {
         stdout.write('Enter your name: ');
-        myName = stdin.readLineSync() ?? '';
+        myName = stdin.readLineSync() ?? ' ';
         stdout.write('\nEnter your age: ');
         myAge = int.parse(stdin.readLineSync() ?? '0');
-        if (myAge < 0 || myAge > 100) {
-            throw(AgeException);
+        if (myAge < 0) {
+            throw AgeException();
         }
-    } catch (FormatException) {
+    } on FormatException {
         stdout.write('\nPlease, enter only numbers\n');
         return 0;
-    } catch (AgeException) {
-        stdout.write('\nNot correct age\n');
+    } on AgeException catch(e) {
+        stdout.write(e.getErrorMessage());
         return 0;
-    } catch (NameException) {
-        stdout.write('\nPlease, enter name, not age\n');
     }
-    int myAgeTo100 = getAgeTo100(myAge);
+
     stdout.write('\nYour name: $myName,  Your age: $myAge\n');
-    stdout.write('\nYour age to 100 : $myAgeTo100\n');
+
+    if (getAgeTo100(myAge) == 100) {
+        stdout.write('\nYou are already 100 years old\n');
+    } else {
+        stdout.write('\nYour age to 100 : ${getAgeTo100(myAge)}\n');
+    }
     return 0;
 }
